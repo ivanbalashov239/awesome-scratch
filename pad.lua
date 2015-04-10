@@ -60,35 +60,36 @@ function pad.set(c, width, height, sticky, screen)
     local detach_signal = capi.client.disconnect_signal or capi.client.remove_signal
 
     local function setscratch(c)
-        -- Scratchpad is floating and has no titlebar
-        awful.client.floating.set(c, true); awful.titlebar.remove(c)
+	    -- Scratchpad is floating and has no titlebar
+	    awful.client.floating.set(c, true); awful.titlebar.remove(c)
 
-        -- Scratchpad client properties
-        toggleprop(c, {ontop=true, above=true, task=true, stick=sticky})
+	    -- Scratchpad client properties
+	    toggleprop(c, {ontop=true, above=true, task=true, stick=sticky})
 
-        -- Scratchpad geometry and placement
-        local screengeom = capi.screen[screen].workarea
-        if width  <= 1 then width  = screengeom.width  * width  end
-        if height <= 1 then height = screengeom.height * height end
+	    -- Scratchpad geometry and placement
+	    local screengeom = capi.screen[screen].workarea
+	    if width  <= 1 then width  = screengeom.width  * width  end
+	    if height <= 1 then height = screengeom.height * height end
 
-        c:geometry({ -- Scratchpad is always centered on screen
-            x = screengeom.x + (screengeom.width  - width)  / 2,
-            y = screengeom.y + (screengeom.height - height) / 2,
-            width = width,      height = height
-        })
+	    c:geometry({ -- Scratchpad is always centered on screen
+	    x = screengeom.x + (screengeom.width  - width)  / 2,
+	    y = screengeom.y + (screengeom.height - height) / 2,
+	    width = width,      height = height
+    })
 
-        -- Scratchpad should not loose focus
-        c:raise(); capi.client.focus = c
+    -- Scratchpad should not loose focus
+    c:raise(); capi.client.focus = c
     end
 
     -- Prepare a table for storing clients,
-    if not scratchpad.pad then scratchpad.pad = {}
-        -- add unmanage signal for scratchpad clients
-        attach_signal("unmanage", function (c)
-            for scr, cl in pairs(scratchpad.pad) do
-                if cl == c then scratchpad.pad[scr] = nil end
-            end
-        end)
+    if not scratchpad.pad then 
+	    scratchpad.pad = {}
+	    -- add unmanage signal for scratchpad clients
+	    attach_signal("unmanage", function (c)
+		    for scr, cl in pairs(scratchpad.pad) do
+			    if cl == c then scratchpad.pad[scr] = nil end
+		    end
+	    end)
     end
 
     -- If the scratcphad is emtpy, store the client,
@@ -135,3 +136,4 @@ function pad.toggle(screen)
 end
 
 return pad
+
